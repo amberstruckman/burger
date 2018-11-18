@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+		<link rel="stylesheet" href="/assets/css/burger_style.css" type="text/css" />
+		<title>Burger Time!</title>
+	
+    	<script src="https://code.jquery.com/jquery.js"></script>
+		{{!-- <script src="/assets/js/cats.js"></script> --}}
+	</head>
+	<body>
+		<h1>Burgers!</h1>
+		<p><img src="assets/img/burger.png" alt="burger image"></p>
+		{{{ body }}}
+		<h2>Add a Burger</h2>
+		{{!-- <form class="create-form"> --}}
+			<div class="form-group">
+				<label for="burgerName">Burger Name:</label>
+				<input type="text" id="burgerName" name="burgerName">
+			</div>
+
+			<button type="button" class="submit">Add Burger</button>
+		{{!-- </form> --}}
+
+		<script>
+			var waitList = $("#waitList");
+			var devouredList = $("#devouredList");
+			$(".submit").on("click", function(event) {
+    			event.preventDefault();
+				
+			    // Here we grab the form elements
+				var burger = {
+					name: $("#burgerName").val().trim()
+				};
+				$.post("/api/burgers", burger,
+					function(data) {
+						console.log("back");
+						console.log(JSON.stringify(data));
+						waitList.append(buildBurgerHtml(data.newObject));
+					}
+				);
+				$("#burgerName").val("");
+      		});
+			$("#waitList").on("click", ".devour", function(event) {
+				event.preventDefault();
+				var burgerId = $(event.target).val();
+				//Here we grab the burger id
+				var burger = {
+					id: burgerId,
+					burger_name: $("#" + burgerId + " span").text(),
+					devoured: true
+				};
+				$.ajax("/api/burgers/" + burgerId, {
+					method: "PUT",
+					data: burger,
+					success: function(data) {
+						var devouredBurger = data.updatedObject;
+						waitList.find("#" + devouredBurger.id).remove();
+						console.log("put back");
+						console.log(JSON.stringify(data));
+						devouredList.append(buildBurgerHtml(devouredBurger));						
+					}
+				});
+			});
+
+
+			function buildBurgerHtml(burger) {
+				var nameHtml  = $("<span>" + burger.burger_name + "</span>");
+				var burgerHtml = $("<li id='" + burger.id + "'>");
+				burgerHtml.append(nameHtml);
+				if (!burger.devoured) {
+					var buttonHtml = $("<button type='button' class='devour' value='" + burger.id + "'>Devour it!</button>");
+					burgerHtml.append(buttonHtml);
+				}
+
+				return burgerHtml;
+			}
+		</script>
+	</body>
+</html>

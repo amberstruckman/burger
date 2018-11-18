@@ -1,0 +1,22 @@
+<section class="burger-section">
+  <h2>Burgers that haven't been devoured!</h2>
+
+  <ul id="waitList">
+    {{#each burgers}}
+      {{#unless devoured}}
+      <li id="{{id}}"><span>{{burger_name}}</span> <button class="devour" type="button" value="{{id}}">Devour it!</button></li>
+      {{/unless}}
+    {{/each}}
+  </ul>
+</section>
+<section class="burger-section">
+  <h2>Burgers that are devoured!</h2>
+
+  <ul id="devouredList">
+    {{#each burgers}}
+      {{#if devoured}}
+      <li id="{{id}}"><span>{{burger_name}}</span></li>
+      {{/if}}
+    {{/each}}
+  </ul>
+</section>

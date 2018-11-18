@@ -1,0 +1,12 @@
+.burger-section {
+    float: left;
+    width: 50%;
+}
+
+body {
+    background-color: orange;
+}
+
+h1, p {
+    text-align: center;
+}
